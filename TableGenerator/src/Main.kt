@@ -18,6 +18,8 @@ fun main() {
     println("Введите количество строк")
     recordCount = sc.nextInt()
    //recordCount =  random.nextInt(20000) + 100
+    println("Стобцов: $columnCount")
+    println("Строк: $recordCount")
 
 
     val dt1 = "drop table if exists `matrix`"
