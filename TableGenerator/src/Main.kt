@@ -11,6 +11,9 @@ fun main() {
     val random = Random()
     val sc = Scanner(System.`in`)
 
+    println("Введите название таблицы")
+    val name: String = sc.nextLine()
+
     println("Введите количество столбцов")
     columnCount = sc.nextInt()
     //columnCount = random.nextInt(20000) + 100
@@ -22,9 +25,9 @@ fun main() {
     println("Строк: $recordCount")
 
 
-    val dt1 = "drop table if exists `matrix`"
-    val ins1 = "INSERT INTO `matrix` VALUES (?, ?, ?)"
-    val ct1 = "CREATE TABLE `matrix` " +
+    val dt1 = "drop table if exists `$name`"
+    val ins1 = "INSERT INTO `$name` VALUES (?, ?, ?)"
+    val ct1 = "CREATE TABLE `$name` " +
             "(value int," +
             "record_index int," +
             "column_index int)"
@@ -71,7 +74,7 @@ fun main() {
             print("$progress%")
         }
     }
-    val result1: ResultSet = s.executeQuery("SELECT COUNT(*) FROM `matrix`")
+    val result1: ResultSet = s.executeQuery("SELECT COUNT(*) FROM `$name`")
     result1.next()
     println("\nВставлено элементов: " + result1.getInt(1))
 
