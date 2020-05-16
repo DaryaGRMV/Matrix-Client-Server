@@ -1,40 +1,27 @@
 package ru.dargr
 
-import java.io.*
 import java.net.Socket
-
 fun main() {
-    val port: Int = 5555
-    val host: String = "localhost"
-    var running: Boolean = true
-    //println("адрес сервера: 192.168.0.70")
-    /* val sc = Scanner(System.`in`)
-    val address: String = sc.nextLine()
-    val address: String = "192.168.0.70"
-    host = address*/
-
-    val socket: Socket = Socket("localhost", 5704)
-    val inputStream: InputStream = socket.getInputStream()
+    val running = true
+    // @Throws(IOException::class, InterruptedException::class)
+    // @JvmStatic
+    val socket = Socket("localhost", 5703)
+    val inputStream = socket.getInputStream()
     while (running) {
-        val matrix1: Matrix = Matrix.readMatrix(inputStream)
-        socket.getInputStream()
-        socket.getOutputStream().write("$".toByteArray())
-        val matrix2: Matrix = Matrix.readMatrix(inputStream)
-        val outputStream: OutputStream = socket.getOutputStream()
-
+        val matrix1 = Matrix.readMatrix(inputStream)//получаем первую матрицу
+        socket.getOutputStream().write("$".toByteArray())//говорим серверу что готовы принять следующую матрицу
+        val matrix2 = Matrix.readMatrix(inputStream)//получаем вторую матрицу
+        val outputStream = socket.getOutputStream()
         try {
             val result = matrix1.multiply(matrix2)
             outputStream.flush()
             outputStream.write("$result $ ".toByteArray())
-            println("таблицы успешно перемножены, размерность результирующей таблицы " +
-                    result.recordCount.toString() +
-                    " x " + result.columnCount)
-        } catch (ex: IllegalArgumentException) {
-            outputStream.write((ex.message + " $ ").toByteArray())
-            println(ex.message)
+            println("таблицы успешно перемножены, размерность результирующей таблицы " + result.columnCount + " x " + result.recordCount)
+        } catch (e: IllegalArgumentException) {
+            outputStream.write((e.message + " $ ").toByteArray())
+            println(e.message)
         }
     }
 }
-
 
 

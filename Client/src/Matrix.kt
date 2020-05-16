@@ -3,24 +3,22 @@ package ru.dargr
 import java.io.InputStream
 import java.util.*
 
+class Matrix(private val tableName: String,
+             val recordCount: Int,
+             val columnCount: Int) {
+    private val body: Array<IntArray> = Array(recordCount) { IntArray(columnCount) }
 
-class Matrix(
-    private val tableName: String,
-    val recordCount: Int, //сроки
-    val columnCount: Int) //столбцы
-{
-    private val body: Array<IntArray> = Array(recordCount) { IntArray(columnCount) } //массив матрицы
-
-    @Throws(IllegalArgumentException::class)
+   // @Throws(IllegalArgumentException::class)
     fun multiply(other: Matrix): Matrix {
         val aRows = recordCount //строки
         val aColumns = columnCount //столбцы
         val bRows = other.recordCount
         val bColumns = other.columnCount
-        require(aColumns == bRows) { "ERROR! " + tableName + ": столбцы: " + aColumns + " е совпадение с " + other.tableName + ":строк " + bRows + ".\n" }
-        /*
-        * алгоритм перемножения матриц, сворован с интернетов
-        * */
+
+       if (aColumns != bRows) { //если матрицы нельзя перемножить
+           throw IllegalArgumentException("ERROR! Матрицы не могут быть перемножены");
+       }
+        //умножение матриц
         val result = Matrix(tableName + "*" + other.tableName, aRows, bColumns)
         for (i in 0 until aRows) {
             for (j in 0 until bColumns) {
@@ -32,11 +30,11 @@ class Matrix(
         return result
     }
 
-    override fun toString(): String { //преобразование матрицы к строке
-        val maxResolution = 20
+    override fun toString(): String {
+        val maxResolution = 20 //максимальное разрешение
         val builder = StringBuilder(" $tableName $columnCount $recordCount\n")
         var j = 0
-        for (record in body) { //по строкам
+        for (record in body) {
             var i = 0
             while (i < columnCount && i < maxResolution) {
                 builder.append(record[i])
@@ -47,50 +45,48 @@ class Matrix(
             if (j >= maxResolution) break
             j++
         }
-        return builder.toString()
+        return builder.toString() //имя, кол-во столбцов, кол-во строк
+                                  //матрица 20х20 к строке
     }
 
-    companion object {
+    companion object { //привязывает aункцию или свойство к классу, а не к его объектам
         @Throws(InterruptedException::class)
         fun readMatrix(inputStream: InputStream?): Matrix { /*
         * ждем пока начнут приходить данные,
-        * затем первыми считываем название и размерность матрицы
+        * затем считываем название и размерность матрицы
         * */
-            val sc = Scanner(inputStream)
-            while (!sc.hasNext()) {
+            val scanner = Scanner(inputStream)
+            while (!scanner.hasNext()) {
                 Thread.sleep(100)
             }
-            val name: String = sc.next()
-            val columnCount: Int = sc.nextInt()
-            val recordCount: Int = sc.nextInt()
+            val name = scanner.next()
+            val columnCount = scanner.nextInt()
+            val recordCount = scanner.nextInt()
             val result = Matrix(name, recordCount, columnCount)
             /*
-        * считываем по три значение - число и его позицию (строка, столбец).
-        * сервер присылает данные в отсортированном по номеру строки виде
+        * считываем по три значение - число и его позицию (строка, столбец)
         * символ $ означает конец таблицы
         * */
-            var stringValue: String = sc.next()
-            var columnIndex: Int = sc.nextInt()  //индекс столбца
-            var recordIndex: Int = sc.nextInt() //индекс записи
+            var stringValue = scanner.next()
+            var columnIndex = scanner.nextInt()
+            var recordIndex = scanner.nextInt()
             while (stringValue != "$") {
-                val record = IntArray(columnCount) //массив равный количеству столбцов
-                val currentRecordIndex = recordIndex //текущий индекс
+                val record = IntArray(columnCount)
+                val currentRecordIndex = recordIndex
                 while (recordIndex == currentRecordIndex) {
-                    record[columnIndex - 1] = stringValue.toInt() //записываем матрицу из строк
-                    stringValue = sc.next()
-                    if (stringValue == "$") { //после каждой строки переходим на новую и так до конца
+                    record[columnIndex - 1] = stringValue.toInt()
+                    stringValue = scanner.next()
+                    if (stringValue == "$") {
                         recordIndex++
                         break
                     }
-                    columnIndex = sc.nextInt()
-                    recordIndex = sc.nextInt()
+                    columnIndex = scanner.nextInt()
+                    recordIndex = scanner.nextInt()
                 }
                 result.body[recordIndex - 2] = record
             }
-            return result
-            /* записывает каждое значение строковой матрицы
-            * в матрицу body*/
-
+            return result //получаем матрицу
         }
     }
+
 }
