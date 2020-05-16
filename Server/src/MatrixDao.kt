@@ -1,41 +1,15 @@
 package ru.dargr
 
-import java.io.IOException
 import java.io.OutputStream
-import java.sql.*
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.SQLException
+import java.sql.Statement
 
-
+//Класс, отвечающий за доступ к данным из базы данных
 class MatrixDao {
-    private val instance = MatrixDao()
-
-    fun getInstance(): MatrixDao? {
-        return instance
-    }
-
-    fun isExistsTable(table1: String?): Boolean {
-        try {
-            DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/matrix?serverTimezone=UTC",
-                "dargr",
-                "14011"
-            ).use { connection ->
-                val metaData: DatabaseMetaData = connection.metaData
-                if (metaData.getTables(null, null, table1, null).next()) {
-                    return true
-                }
-            }
-        } catch (e: SQLException) {
-            e.printStackTrace()
-        }
-        return false
-    }
-
-    @Throws(IOException::class)
-    fun writeMatrix(tableName: String, outputStream: OutputStream) { /*
-        * этот try блок сам закроет все,
-        * что открывается в его круглых скобках
-        * (Connection, PreparedStatement, Statement)
-        * */
+    //@Throws(IOException::class)
+    fun writeMatrix(tableName: String, outputStream: OutputStream) {
         try {
             val c: Connection = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/matrix?serverTimezone=UTC",
@@ -44,22 +18,15 @@ class MatrixDao {
             )
             val selectAllStatement: Statement = c.createStatement()
             val s: Statement = c.createStatement()
-
-            var countRes: ResultSet = s.executeQuery("SELECT MAX(column_index) FROM $tableName")
+            var countRes =
+                s.executeQuery("SELECT MAX(column_index) FROM $tableName") //максимальный индекс столбца
             countRes.next()
-            val columnCount: Int = countRes.getInt(1)
-
-            countRes = s.executeQuery("SELECT MAX(record_index) FROM $tableName")
+            val columnCount = countRes.getInt(1) //количество столбцов
+            countRes = s.executeQuery("SELECT MAX(record_index) FROM $tableName") //максимальный индекс строки
             countRes.next()
-            val recordCount = countRes.getInt(1)
-
+            val recordCount = countRes.getInt(1) //количество строк
             s.close()
-
-            outputStream.write(
-                (" " + tableName +
-                        " " + columnCount + " " + recordCount + "\n").toByteArray()
-            )
-
+            outputStream.write(" $tableName $columnCount $recordCount\n".toByteArray())
             val resultSet =
                 selectAllStatement.executeQuery("SELECT * FROM $tableName ORDER BY record_index")
             while (resultSet.next()) {
@@ -72,10 +39,29 @@ class MatrixDao {
             }
             countRes.close()
             outputStream.write(" $ ".toByteArray())
-
         } catch (e: SQLException) {
             e.printStackTrace()
         }
     }
 
+    companion object {
+        val instance = MatrixDao()
+
+        fun isExistsTable(table1: String?): Boolean {
+            try {
+                val c: Connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/matrix?serverTimezone=UTC",
+                    "dargr",
+                    "14011"
+                )
+                val metaData = c.metaData
+                if (metaData.getTables(null, null, table1, null).next()) {
+                    return true
+                }
+            } catch (e: SQLException) {
+                e.printStackTrace()
+            }
+            return false
+        }
+    }
 }
