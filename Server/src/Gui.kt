@@ -1,19 +1,20 @@
 package ru.dargr
 
 import java.net.Socket
-import java.util.*
 import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.JTextArea
 
 
-class Gui(private val server: Server) {
+class Gui(private val server: Server): JFrame() {
     //текстовое поле, куда выводится результат
-    private val mainTextArea: JTextArea? = null
-    private val scroll: JPanel? = null
+    private var mainTextArea: JTextArea
+    private val scroll: JPanel
 
     init {
         val frame = JFrame("Result area")
+        mainTextArea = JTextArea()
+        scroll = JPanel()
         frame.contentPane = scroll
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         frame.pack()
@@ -30,5 +31,9 @@ class Gui(private val server: Server) {
         * а само подключение вернули серверу как "освободившееся"*/
         mainTextArea!!.append(result)
         server.returnSocket(socket!!)
+    }
+
+    fun append(s: String?) {
+        mainTextArea!!.append(s)
     }
 }

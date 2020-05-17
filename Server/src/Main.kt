@@ -1,28 +1,25 @@
 package ru.dargr
 
 import java.io.IOException
-
 import java.net.Socket
 import java.util.*
 
+class Dao{
+    companion object{
+        val dao = MatrixDao.getInstance()
+    }
+}
 
-fun main(){
-    /*
-        * Сервер запускается в отдельном потоке
+fun main() {
+
+    val dao = Dao
+        /* Сервер запускается в отдельном потоке
         * чтобы он мог в любой момент принять нового клиента
         * */
-    /*
-        * Сервер запускается в отдельном потоке
-        * чтобы он мог в любой момент принять нового клиента
-        * */
-
-
-    val server = Server(5555, 100, "localhost")
+    val server = Server(5703, 100, "localhost")
     val serverThread = Thread(server)
     serverThread.start()
-
     val gui = Gui(server)
-
     println("команда для перемножения двух матриц:")
     println("%tablename1% %tablename2%")
     println("команда остановки сервера:")
@@ -33,32 +30,27 @@ fun main(){
         * в основном потоке программы мы считываем команды -
         * какие две таблицы нужно перемножить
         * */
-    /*
-        * в основном потоке программы мы считываем команды -
-        * какие две таблицы нужно перемножить
-        * */while (scanner.next().also { tablename1 = it } != "/stop") {
+    while (scanner.next().also { tablename1 = it } != "/stop") {
         try {
-            val tablename2: String = scanner.next()
+            val tablename2 = scanner.next()
             /*
                  * просим сервер перемножить две таблицы -
                  * в ответ получаем сокет, через который нам придет результат
                  * */
             var resultSocket: Socket? = null
-            while (resultSocket == null) {
-                resultSocket = try {
-                    server.multiply(tablename1!!, tablename2)
+            while (resultSocket==null) {
+                try {
+                    resultSocket = server.multiply(tablename1, tablename2)
                 } catch (e: IOException) { //Если произошла ошибка подключения - забываем про этого клиента, ждем следующего
                     null
                 }
             }
-            /*
-                 * запускаем новый поток, ждет, когда придет результат через resultSocket
-                 * чтобы передать его в форму gui
-                 * */Thread(ResultConnection(resultSocket, gui)).start()
+                 /* запускаем новый поток, ждем, когда придет результат через resultSocket
+                 * чтобы передать его в форму gui*/
+            Thread(ResultConnection(resultSocket, gui)).start()
         } catch (e: IllegalArgumentException) {
             gui.append(e.message)
         }
     }
-
     server.stop()
 }

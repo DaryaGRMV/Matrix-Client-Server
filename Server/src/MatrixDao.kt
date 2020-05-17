@@ -8,12 +8,6 @@ import java.sql.Statement
 
 //Класс, отвечающий за доступ к данным из базы данных
 class MatrixDao {
-    private val instance = MatrixDao()
-
-    fun getInstance(): MatrixDao? {
-        return instance
-    }
-
     //@Throws(IOException::class)
     fun writeMatrix(tableName: String, outputStream: OutputStream) {
         try {
@@ -50,21 +44,28 @@ class MatrixDao {
         }
     }
 
-    fun isExistsTable(table1: String?): Boolean {
-        try {
-            val c: Connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/matrix?serverTimezone=UTC",
-                "dargr",
-                "14011"
-            )
-            val metaData = c.metaData
-            if (metaData.getTables(null, null, table1, null).next()) {
-                return true
-            }
-        } catch (e: SQLException) {
-            e.printStackTrace()
-        }
-        return false
-    }
+    companion object {
+        private val instance = MatrixDao()
 
+        fun getInstance(): MatrixDao {
+            return instance
+        }
+
+        fun isExistsTable(table1: String?): Boolean {
+            try {
+                val c: Connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/matrix?serverTimezone=UTC",
+                    "dargr",
+                    "14011"
+                )
+                val metaData = c.metaData
+                if (metaData.getTables(null, null, table1, null).next()) {
+                    return true
+                }
+            } catch (e: SQLException) {
+                e.printStackTrace()
+            }
+            return false
+        }
+    }
 }
