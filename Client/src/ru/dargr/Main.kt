@@ -4,7 +4,6 @@ import java.net.Socket
 fun main() {
     val running = true
     // @Throws(IOException::class, InterruptedException::class)
-    // @JvmStatic
     val socket = Socket("localhost", 5703)
     val inputStream = socket.getInputStream()
     while (running) {
