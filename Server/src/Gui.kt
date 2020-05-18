@@ -55,11 +55,11 @@ class Gui(private val server: Server): JFrame() {
     fun returnResult(socket: Socket?, result: String?) {
         /* получили от подключения результат вычисления - вывели его в поле,
         * а само подключение вернули серверу как "освободившееся"*/
-        mainTextArea!!.append(result)
+        mainTextArea.append(result)
         server.returnSocket(socket!!)
     }
 
     fun append(s: String?) {
-        mainTextArea!!.append(s)
+        mainTextArea.append(s)
     }
 }

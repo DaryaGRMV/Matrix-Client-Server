@@ -21,7 +21,7 @@ fun main() {
     serverThread.start()
     val gui = Gui(server)
     println("команда для перемножения двух матриц:")
-    println("%tablename1% %tablename2%")
+    println("tablename1 tablename2")
     println("команда остановки сервера:")
     println("/stop")
     val scanner = Scanner(System.`in`)

@@ -5,8 +5,8 @@ import java.util.*
 
 
 fun main() {
-    var columnCount: Int
-    var recordCount: Int
+    val columnCount: Int
+    val recordCount: Int
 
     val random = Random()
     val sc = Scanner(System.`in`)
@@ -31,17 +31,6 @@ fun main() {
             "(value int," +
             "record_index int," +
             "column_index int)"
-
-    /*
-       * try(...) автоматически закроет все, что создается в скобках.
-       * в теле блока обычные вложенные циклы - внешний по номеру строки,
-       * внутренний по номеру столбца. Метод setInt(i, v) устанавливает на место знака вопроса
-       * i-го по счету значение v.
-       * Поскольку строк может быть и 10^8, не рационально (по врермени) для каждой строчки делать отдельный запрос
-       * на вставку и коммитить этот запрос. Вместо этого они складываются вместе методом addBatch() и затем
-       * вставляются все вместе методом executeBatch().
-       * После этого происходит "commit" - изменения сохраняются в бд.
-       * */
 
     val c: Connection = DriverManager.getConnection(
         "jdbc:mysql://localhost:3306/matrix?serverTimezone=UTC",

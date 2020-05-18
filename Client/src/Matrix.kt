@@ -31,7 +31,7 @@ class Matrix(private val tableName: String,
     }
 
     override fun toString(): String {
-        val maxResolution = 20 //максимальное разрешение
+        val maxResolution = 40 //максимальное разрешение
         val builder = StringBuilder(" $tableName $columnCount $recordCount\n")
         var j = 0
         for (record in body) {
@@ -49,9 +49,9 @@ class Matrix(private val tableName: String,
                                   //матрица 20х20 к строке
     }
 
-    companion object { //привязывает aункцию или свойство к классу, а не к его объектам
+    companion object { //привязывает функцию или свойство к классу, а не к его объектам
         @Throws(InterruptedException::class)
-        fun readMatrix(inputStream: InputStream?): Matrix { /*
+        fun readMatrix(inputStream: InputStream): Matrix { /*
         * ждем пока начнут приходить данные,
         * затем считываем название и размерность матрицы
         * */
