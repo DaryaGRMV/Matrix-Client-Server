@@ -1,26 +1,52 @@
 package ru.dargr
 
+import java.awt.Dimension
 import java.net.Socket
-import javax.swing.JFrame
-import javax.swing.JPanel
-import javax.swing.JTextArea
+import javax.swing.*
 
 
 class Gui(private val server: Server): JFrame() {
     //текстовое поле, куда выводится результат
-    private var mainTextArea: JTextArea
-    private val scroll: JPanel
+    private var mainTextArea: JTextArea = JTextArea()
+    private val dim: Dimension
 
     init {
-        val frame = JFrame("Result area")
-        mainTextArea = JTextArea()
-        scroll = JPanel()
-        frame.contentPane = scroll
-        frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-        frame.pack()
-        frame.isVisible = true
-        frame.setSize(640, 720)
-        frame.isAlwaysOnTop = true
+
+        defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
+        dim = Dimension(500, 500)
+        minimumSize = dim
+
+        val gl = GroupLayout(contentPane)
+        layout = gl
+        gl.setVerticalGroup(
+            gl.createSequentialGroup()
+                .addGap(4)
+                .addComponent(
+                    mainTextArea,
+                    (dim.height).toInt(),
+                    GroupLayout.DEFAULT_SIZE,
+                    GroupLayout.DEFAULT_SIZE
+                )
+                .addGap(4)
+        )
+        gl.setHorizontalGroup(
+            gl.createSequentialGroup()
+                .addGap(4)
+                .addGroup(
+                    gl.createParallelGroup(GroupLayout.Alignment.CENTER)
+                        .addComponent(
+                            mainTextArea,
+                            (dim.width).toInt(),
+                            GroupLayout.DEFAULT_SIZE,
+                            GroupLayout.DEFAULT_SIZE
+                        )
+                    //.addComponent(controlPanel)
+                )
+                .addGap(4)
+        )
+        pack()
+        isVisible = true
+
     }
     /*
     * synchronized означает, что если два или более потока не могут использовать этот метод одновременно
