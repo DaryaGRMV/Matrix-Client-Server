@@ -1,5 +1,6 @@
 package ru.dargr
 
+import Gui
 import java.io.IOException
 import java.net.Socket
 

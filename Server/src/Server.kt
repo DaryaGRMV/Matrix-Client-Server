@@ -1,5 +1,4 @@
-package ru.dargr
-
+import ru.dargr.BdMatrix
 import java.io.IOException
 import java.net.InetAddress
 import java.net.ServerSocket
@@ -14,7 +13,7 @@ class Server(port: Int, maxConnections: Int, address: String?) : Runnable {
     * */
     private var freeSockets: Queue<Socket>? = null
     private var serverSocket: ServerSocket? = null
-    private val dao: MatrixDao = MatrixDao.getInstance()
+    private val dao: BdMatrix = BdMatrix.getInstance()
     private var running = false
 
     init {
@@ -41,7 +40,7 @@ class Server(port: Int, maxConnections: Int, address: String?) : Runnable {
     fun multiply(table1: String?, table2: String?): Socket {
 
         // если таблицы с заданным именем нет - выбрасывается исключение
-        if(!MatrixDao.isExistsTable(table1) || !MatrixDao.isExistsTable(table2)){
+        if(!BdMatrix.isExistsTable(table1) || !BdMatrix.isExistsTable(table2)){
             throw IllegalArgumentException("table not found");
         }
 

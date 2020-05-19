@@ -1,21 +1,16 @@
 package ru.dargr
 
+import Gui
+import Server
 import java.io.IOException
 import java.net.Socket
 import java.util.*
 
-class Dao{
-    companion object{
-        val dao = MatrixDao.getInstance()
-    }
-}
-
 fun main() {
 
-    val dao = Dao
-        /* Сервер запускается в отдельном потоке
-        * чтобы он мог в любой момент принять нового клиента
-        * */
+    /* Сервер запускается в отдельном потоке
+    * чтобы он мог в любой момент принять нового клиента
+    * */
     val server = Server(5703, 100, "localhost")
     val serverThread = Thread(server)
     serverThread.start()
@@ -45,8 +40,8 @@ fun main() {
                     null
                 }
             }
-                 /* запускаем новый поток, ждем, когда придет результат через resultSocket
-                 * чтобы передать его в форму gui*/
+            /* запускаем новый поток, ждем, когда придет результат через resultSocket
+            * чтобы передать его в форму gui*/
             Thread(ResultConnection(resultSocket, gui)).start()
         } catch (e: IllegalArgumentException) {
             gui.append(e.message)

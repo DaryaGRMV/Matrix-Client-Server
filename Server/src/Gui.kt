@@ -1,5 +1,3 @@
-package ru.dargr
-
 import java.awt.Dimension
 import java.net.Socket
 import javax.swing.*

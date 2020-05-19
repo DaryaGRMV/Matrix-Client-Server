@@ -7,7 +7,7 @@ import java.sql.SQLException
 import java.sql.Statement
 
 //Класс, отвечающий за доступ к данным из базы данных
-class MatrixDao {
+class BdMatrix {
     //@Throws(IOException::class)
     fun writeMatrix(tableName: String, outputStream: OutputStream) {
         try {
@@ -45,9 +45,9 @@ class MatrixDao {
     }
 
     companion object {
-        private val instance = MatrixDao()
+        private val instance = BdMatrix()
 
-        fun getInstance(): MatrixDao {
+        fun getInstance(): BdMatrix {
             return instance
         }
 
